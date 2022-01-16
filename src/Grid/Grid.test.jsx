@@ -19,7 +19,7 @@ describe('renders 5x5 grid', () => {
 		test(`check if cell ${i+1} rendered sucessfully`, () => {
 			const cellElm = root.querySelector(`.grid > div.cell:nth-child(${i+1})`);
 
-			expect(cellElm.style.backgroundImage).toBe(`url(${contents[i].img})`)
+			expect(cellElm.children.item(0).style.backgroundImage).toBe(`url(${gridCell.img})`)
 			if ((i % 5 + Math.floor(i / 5) % 2) % 2) {
 				expect(cellElm).toHaveClass('checkered')
 			} else {
