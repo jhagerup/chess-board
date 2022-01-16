@@ -1,0 +1,36 @@
+.grid {
+    --cell-size: 80px;
+    --border-size: 1px;
+    --border-color: #000000;
+    display: grid;
+    grid-template-columns: repeat(var(--width), 1fr);
+    width: min(100%, calc(var(--width) * var(--cell-size)));
+    border: var(--border-color) var(--border-size) solid;
+    background-color: var(--border-color);
+    gap: var(--border-size);
+}
+
+.grid .cell {
+    display: inline-block;
+    position: relative;
+    background-color: var(--background);
+    padding-bottom: 100%;
+}
+
+.grid .cell.checkered {
+    background-color: #b5b5b5;
+}
+
+@media (prefers-color-scheme: dark) {
+    .grid .cell.checkered {
+        background-color: #404040;
+    }
+}
+
+.grid .cell .img {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+}
