@@ -36,7 +36,6 @@ function App() {
 			<DndProvider backend={(isMobile) ? TouchBackend : HTML5Backend} options={{enableMouseEvents: true}}>
 					<Grid grid={board} width={game.width} height={game.height} checkered={true} />
 			</DndProvider>
-			{navigator.userAgent}
 		</div>
 	);
 }
