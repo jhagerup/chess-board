@@ -7,6 +7,7 @@ import scissorsImg from './imgs/scissors.png'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { TouchBackend } from 'react-dnd-touch-backend'
 import { DndProvider } from 'react-dnd'
+import isValidMove from "./isValidMove";
 
 const game = generateGameObject(7, 7)
 
@@ -91,11 +92,24 @@ function generateGameObject(width, height) {
 		 * @param {number} to The index to move the piece to
 		 */
 		movePiece(from, to) {
-			const newBoard = [...board]
+			const newBoard = [...this.board]
 			// console.log('move', from, to, newBoard[to].img, newBoard[from].img)
-			if (newBoard[to].img) return
-			if (!newBoard[from].img) return
-
+			// if (newBoard[to].img) return
+			// if (!newBoard[from].img) return
+			if (!isValidMove({
+				pos: {
+					x: from % this.width,
+					y: Math.floor(from / this.width)
+				},
+				type: ['rock', 'paper', 'scissors'][[rockImg, paperImg, scissorsImg].indexOf(newBoard[from].img)]
+			}, {
+				pos: {
+					x: to % this.width,
+					y: Math.floor(to / this.width)
+				},
+				type: [null, 'rock', 'paper', 'scissors'][[rockImg, paperImg, scissorsImg].indexOf(newBoard[to].img)+1]
+			})) return
+			
 			newBoard[to] = Object.assign({}, newBoard[from])
 			newBoard[from] = Object.assign({}, newBoard[from], {img: null})
 			this.board = newBoard

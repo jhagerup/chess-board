@@ -1,5 +1,5 @@
 import './Grid.css'
-import { DragPreviewImage, useDrag, useDrop } from 'react-dnd'
+import { useDrag, useDrop } from 'react-dnd'
 import Preview from 'react-dnd-preview';
 
 const generatePreview = (params) => {
@@ -16,7 +16,7 @@ const generatePreview = (params) => {
 };
 
 function Cell(params) {
-    const [{ opacity }, dragRef, preview] = useDrag(
+    const [{ opacity }, dragRef] = useDrag(
         () => ({
             type: 'cell',
             item: {
