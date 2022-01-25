@@ -34,6 +34,7 @@ function Cell(params) {
         accept: 'cell',
         drop: (item) => window.game.movePiece(item.index, params.index)
     })
+    // console.log(params.type)
 
     return (
         <div
@@ -51,7 +52,7 @@ function Cell(params) {
                         opacity
                     }}
                     ref={dragRef}
-                    className='img' />
+                    className={'img' + (params.team ? ' top' : '')} />
             </>}
         </div>
     )
@@ -60,11 +61,12 @@ function Cell(params) {
 function Grid(params) {
     return (
         <div className='grid' style={{ "--width": params.width, "--height": params.height }}>
-            {params.grid.map(({ img, events }, i) => <Cell
+            {params.grid.map(({ img, events, team }, i) => <Cell
                 events={events}
                 checkered={params.checkered && (i % params.width + Math.floor(i / params.width) % 2) % 2}
                 img={img}
                 index={i}
+                team={team}
                 key={i} />)}
         </div>
     )
