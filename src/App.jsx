@@ -9,7 +9,8 @@ import { TouchBackend } from 'react-dnd-touch-backend'
 import { DndProvider } from 'react-dnd'
 import isValidMove from "./isValidMove";
 
-const game = generateGameObject(5, 5)
+// const game = generateGameObject(61, 12)
+const game = createGameObjectFromBoardString('6;6;rrppss;sspprr;      ;      ;SSPPRR;RRPPSS')
 
 window.game = game
 
@@ -153,5 +154,70 @@ function serializeCurrentBoardState() {
 }
 
 window.seri = serializeCurrentBoardState
+
+function createGameObjectFromBoardString(str) {
+	const {width, height, board} = parseBoardString(str)
+
+	const game = generateGameObject(width, height)
+
+	game.board = board
+
+	return game
+}
+
+/**
+ * 
+ * @param {string} str 
+ * @returns {{
+ * 	width: number,
+ * 	height: number,
+ * 	board: {
+ * 		img: string,
+ * 		team: boolean,
+ *  	events: React.HTMLAttributes<HTMLDivElement>
+ * 	}[]
+ * }}
+ */
+
+function parseBoardString(str) {
+	const [width, height, ...boardStrs] = str.split(';')
+
+	let board = []
+
+	boardStrs.forEach(str => {
+		board = [
+			...board,
+			str.split('').map(char => {
+				const type = [
+					rockImg,
+					paperImg,
+					scissorsImg,
+					null
+				][[
+					'r',
+					'p',
+					's',
+					' '
+				].indexOf(char.toLowerCase())]
+
+				return {
+					img: type,
+					team: char.toUpperCase() === char,
+					events: {}
+				}
+			})
+		]
+	})
+
+	board = board.reduce((board, col) => [...board, ...col], [])
+
+	return {
+		width: Number(width),
+		height: Number(height),
+		board
+	}
+}
+
+window.parsee = parseBoardString
 
 export default App;
