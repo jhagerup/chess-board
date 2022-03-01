@@ -5,6 +5,7 @@
     [ ] Winning
         [ ] All of one type of piece killed
     [X] Top- Side- Bottombars and centering gameboard
+    [ ] Dropping pieces outside of the board
 
 [ ] Gamemodes
     [X] Colored pieces

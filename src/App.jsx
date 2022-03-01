@@ -13,14 +13,24 @@ import isValidMove from "./isValidMove";
 import is_finished from "./is_finished";
 import Bar from "./Bar/bar";
 
+const game = createGameObjectFromBoardString('6;6;rrppss;sspprr;      ;      ;SSPPRR;RRPPSS')
+
+window.updateGameObj = newGame => {
+	game.width = newGame.width
+	game.height = newGame.height
+	game.board = newGame.raw_board
+}
+
 // const game = generateGameObject(61, 12)
 
-const game = createGameObjectFromBoardString('6;6;rrppss;sspprr;      ;      ;SSPPRR;RRPPSS')
+// const game = createGameObjectFromBoardString('6;6;rrppss;sspprr;      ;      ;SSPPRR;RRPPSS')
+// const game = generateGameObject(1, 1)
 
 window.game = game
 window.rockImg = rockImg
 window.paperImg = paperImg
 window.scissorsImg = scissorsImg
+window.createGameObjectFromBoardString = createGameObjectFromBoardString
 
 
 //#region  https://stackoverflow.com/a/3540295
@@ -38,6 +48,7 @@ function App() {
 	game.update = setBoard
 
 	useEffect(_ => {
+
 		setBoard(game.board)
 	}, [])
 
@@ -46,9 +57,9 @@ function App() {
 			<Bar color="tomato" className="top-bar" />
 			<Bar color="wheat" className="side-bar" />
 			<Bar color="chocolate" className="bottom-bar" />
-			<DndProvider backend={(isMobile) ? TouchBackend : HTML5Backend} options={{ enableMouseEvents: true }}>
+			{board && <DndProvider backend={(isMobile) ? TouchBackend : HTML5Backend} options={{ enableMouseEvents: true }}>
 				<Grid grid={board} width={game.width} height={game.height} checkered={true} />
-			</DndProvider>
+			</DndProvider>}
 		</div>
 	);
 }
@@ -222,6 +233,6 @@ function parseBoardString(str) {
 	}
 }
 
-window.parsee = parseBoardString
+window.parse = parseBoardString
 
 export default App;
