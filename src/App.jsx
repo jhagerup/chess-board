@@ -1,3 +1,5 @@
+// <reference href="./types.d.ts">
+
 import React, { useState, useEffect } from "react"
 import './App.css';
 import Grid from './Grid/Grid'
@@ -8,12 +10,14 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { TouchBackend } from 'react-dnd-touch-backend'
 import { DndProvider } from 'react-dnd'
 import isValidMove from "./isValidMove";
+import is_finished from "./is_finished";
+import Bar from "./Bar/bar";
 
 // const game = generateGameObject(61, 12)
+
 const game = createGameObjectFromBoardString('6;6;rrppss;sspprr;      ;      ;SSPPRR;RRPPSS')
 
 window.game = game
-
 window.rockImg = rockImg
 window.paperImg = paperImg
 window.scissorsImg = scissorsImg
@@ -39,6 +43,9 @@ function App() {
 
 	return (
 		<div className="App">
+			<Bar color="tomato" className="top-bar" />
+			<Bar color="wheat" className="side-bar" />
+			<Bar color="chocolate" className="bottom-bar" />
 			<DndProvider backend={(isMobile) ? TouchBackend : HTML5Backend} options={{ enableMouseEvents: true }}>
 				<Grid grid={board} width={game.width} height={game.height} checkered={true} />
 			</DndProvider>
@@ -50,28 +57,17 @@ function App() {
  * 
  * @param {number} width 
  * @param {number} height 
- * @returns {{
- *  width: number,
- *  height: number,
- *  update: Function,
- *  board: {
- *    img?: string,
- * 	  team: boolean,
- *    events: React.HTMLAttributes<HTMLDivElement>
- *  }[],
- * 	movePiece: Function
- * }}
+ * @returns {Game}
  */
 
 function generateGameObject(width, height) {
-	let board = Array(width * height).fill(null).map((_, i) => ({
-		img: [
-			rockImg,
-			paperImg,
-			scissorsImg,
-			null
-		][Math.floor(Math.random() * 4)], events: {}, team: Math.random() >= .5
-	}))
+	let board = Array(width * height).fill(null)
+
+	function updateBoard(game) {
+		game.raw_board = board
+
+		game.update(board)
+	}
 
 	return {
 		width,
@@ -80,18 +76,19 @@ function generateGameObject(width, height) {
 		set board(value) {
 			console.log('set', value)
 			board = value
-			this.update(value)
+			updateBoard(this)
 		},
 		get board() {
 			return new Proxy(board, {
 				set: (target, name, value) => {
 					console.log('set', name, value)
 					target[name] = value
-					this.update(board)
+					updateBoard(this)
 					return true
 				}
 			});
 		},
+		raw_board: board,
 		/**
 		 * @description Moves a piece
 		 * @param {number} from The index of the piece to move
@@ -99,9 +96,6 @@ function generateGameObject(width, height) {
 		 */
 		movePiece(from, to) {
 			const newBoard = [...this.board]
-			// console.log('move', from, to, newBoard[to].img, newBoard[from].img)
-			// if (newBoard[to].img) return
-			// if (!newBoard[from].img) return
 			if (!isValidMove({
 				pos: {
 					x: from % this.width,
@@ -121,8 +115,25 @@ function generateGameObject(width, height) {
 			newBoard[to] = Object.assign({}, newBoard[from])
 			newBoard[from] = Object.assign({}, newBoard[from], { img: null })
 			this.board = newBoard
-			// console.log('moved')
-		}
+
+			const finished = is_finished(game)
+			switch (finished) {
+				case "w1":
+					console.log("Win!")
+					break;
+				case "w2":
+					console.log("Lose!")
+					break;
+				case "t":
+					console.log("Tie!")
+					break;
+				default:
+					break;
+			}
+		},
+		rockImg,
+		paperImg,
+		scissorsImg
 	}
 }
 
@@ -156,7 +167,7 @@ function serializeCurrentBoardState() {
 window.seri = serializeCurrentBoardState
 
 function createGameObjectFromBoardString(str) {
-	const {width, height, board} = parseBoardString(str)
+	const { width, height, board } = parseBoardString(str)
 
 	const game = generateGameObject(width, height)
 
@@ -168,15 +179,7 @@ function createGameObjectFromBoardString(str) {
 /**
  * 
  * @param {string} str 
- * @returns {{
- * 	width: number,
- * 	height: number,
- * 	board: {
- * 		img: string,
- * 		team: boolean,
- *  	events: React.HTMLAttributes<HTMLDivElement>
- * 	}[]
- * }}
+ * @returns {Game}
  */
 
 function parseBoardString(str) {
@@ -203,7 +206,8 @@ function parseBoardString(str) {
 				return {
 					img: type,
 					team: char.toUpperCase() === char,
-					events: {}
+					events: {},
+					overlayCol: '#0000'
 				}
 			})
 		]

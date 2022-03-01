@@ -1,7 +1,31 @@
 .App {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-areas: 
+        "s t"
+        "s g"
+        "s b";
+        /* grid-template-columns: minmax(0px, 230px) 1fr;
+        grid-template-rows: minmax(0px, 220px) 1fr minmax(0px, 150px); */
+        grid-template-columns: 230px 1fr;
+        grid-template-rows: 220px 1fr 150px;
+    width: 100vw;
+    height: 100vh;
+}
+
+.top-bar {
+    grid-area: t;
+}
+
+.side-bar {
+    grid-area: s;
+}
+
+.bottom-bar {
+    grid-area: b;
+}
+
+.main {
+    grid-area: g;
 }
 
 :root {

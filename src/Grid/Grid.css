@@ -1,24 +1,41 @@
+.main {
+    position: relative;
+}
+
 .grid {
     --cell-size: 80px;
     --border-size: 1px;
     --border-color: #000000;
+    box-sizing: border-box;
     display: grid;
     grid-template-columns: repeat(var(--width), 1fr);
-    width: min(100%, calc(var(--width) * var(--cell-size)));
+    grid-template-rows: repeat(var(--height), 1fr);
+    /* width: min(100%, calc(var(--width) * var(--cell-size))); */
     border: var(--border-color) var(--border-size) solid;
     background-color: var(--border-color);
     gap: var(--border-size);
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .grid .cell {
-    display: inline-block;
+    --overlay: #0000;
+    /* display: inline-flex; */
     position: relative;
-    background-color: var(--background);
+    /* background-color: var(--background); */
     padding-bottom: 100%;
+    /* aspect-ratio: 1/1; */
+    background-image:
+        linear-gradient(to right, var(--overlay), var(--overlay)),
+        linear-gradient(to right, var(--background), var(--background));
+    /* min-width: 20px; */
 }
 
 .grid .cell.checkered {
-    background-color: #b5b5b5;
+    --background: #b5b5b5;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,14 +45,19 @@
 }
 
 .grid .cell .img {
+    --team: #0000;
     position: absolute;
     left: 0px;
     right: 0px;
     top: 0px;
     bottom: 0px;
-    background-color: #45beee;
+    /* background-image:
+        var(--image),
+        linear-gradient(to right, var(--overlay), var(--overlay)),
+        linear-gradient(to right, var(--team), var(--team)); */
+    background-color: var(--team);
 }
 
 .grid .cell .img.top {
-    background-color: #9369e0;
+    /* background-color: #9369e0; */
 }
